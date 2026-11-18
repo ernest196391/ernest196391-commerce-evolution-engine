@@ -6,6 +6,12 @@ Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquie
 
 > **Estado v0.2 (experimental).** Está implementado el análisis CSV sin dependencias externas y el auditor Playwright de páginas públicas. No está implementado el conector WooCommerce autenticado, el acceso remoto a servidores, ni la revisión estética con IA. No se han certificado aún ejecuciones visuales en producción.
 
+## Prioridad actual: agente de mejora diaria de productos
+
+**Objetivo único activo:** mejorar progresivamente fotografías reales, títulos SEO, descripción corta y completa del catálogo, con evidencia, aprobación y reversión. Consultar [checkpoint de prioridad](docs/ACTIVE_PRIORITY.md) y [roadmap actualizado](docs/ROADMAP.md).
+
+El radar de proveedores, ingesta de chats WhatsApp, agotados y descubrimiento continuo **se han pospuesto a una fase posterior por decisión del propietario**. Su prototipo y documentación se conservan como referencia, pero no deben distraer ni activar tareas. Los componentes comunes (permisos, fuentes, SKU/variante, cola, evidencia, coste y auditoría) sí deben diseñarse para reutilización.
+
 ## Auditor CSV — v0.1
 
 Requiere Python 3.10+:
@@ -34,7 +40,7 @@ Genera capturas en 360, 390 y 1280 píxeles, además de `visual-report.json` y `
 - `Test auditor (offline)`: pruebas locales sin servicios externos.
 - `Visual audit (manual)`: requiere ejecutarlo expresamente desde Actions. Consume minutos de GitHub Actions; confirmar presupuesto disponible antes de iniciarlo. No se ejecuta con cada push.
 
-## Radar de proveedores — prototipo offline
+## Fase posterior, en pausa: radar de proveedores — prototipo offline
 
 Este módulo produce **propuestas de revisión**, nunca cambios en el catálogo. Usa observaciones sintéticas o exportadas con permiso, por proveedor, SKU y variante:
 
