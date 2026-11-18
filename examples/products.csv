@@ -1,0 +1,3 @@
+id,name,description,short_description,images,sku,status,categories
+1001,Ventilador,"<p>Ventilador recargable.</p>","Ideal para casa",https://example.com/fan.jpg,FAN-001,publish,Hogar
+1002,Conectores solares tipo MC4 juego de dos unidades,"<p>Juego de conectores solares con ficha técnica pendiente. Confirmar compatibilidad y corriente nominal con el fabricante antes de ofrecer.</p>","Juego de conectores tipo MC4, pendiente de validación técnica",https://example.com/a.jpg|https://example.com/b.jpg|https://example.com/c.jpg|https://example.com/d.jpg,MC4-002,publish,Energía
