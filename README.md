@@ -12,6 +12,16 @@ Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquie
 
 El radar de proveedores, ingesta de chats WhatsApp, agotados y descubrimiento continuo **se han pospuesto a una fase posterior por decisión del propietario**. Su prototipo y documentación se conservan como referencia, pero no deben distraer ni activar tareas. Los componentes comunes (permisos, fuentes, SKU/variante, cola, evidencia, coste y auditoría) sí deben diseñarse para reutilización.
 
+## Motor editorial del agente principal — implementado, pendiente de validación CI
+
+La nueva [rúbrica editorial](docs/EDITORIAL_QUALITY.md) detecta títulos débiles, descripciones genéricas, textos cortos duplicados, referencias fotográficas insuficientes y afirmaciones técnicas que necesitan fuente. No inventa datos ni modifica productos.
+
+```bash
+python -m src.commerce_evolution_engine.editorial_review --input examples/products.csv --outdir results/editorial --tenant demo
+```
+
+Incluye [skill editorial-quality](.agents/skills/editorial-quality/SKILL.md) y pruebas de regresión. La validación de CI y una ejecución contra un catálogo real todavía están pendientes.
+
 ## Auditor CSV — v0.1
 
 Requiere Python 3.10+:
