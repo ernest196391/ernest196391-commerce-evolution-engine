@@ -1,0 +1,27 @@
+name: Visual audit (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-visual-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Playwright
+        run: |
+          python -m pip install "playwright>=1.56,<2"
+          python -m playwright install --with-deps chromium
+      - name: Read-only public screenshots
+        run: python -m src.commerce_evolution_engine.visual_audit --urls examples/public-urls.txt --host casaviva.company --outdir results/visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-visual-audit
+          path: results/visual/
+          if-no-files-found: warn
+          retention-days: 3
