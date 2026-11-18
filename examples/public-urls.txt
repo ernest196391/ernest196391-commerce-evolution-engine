@@ -1,0 +1,4 @@
+# Ejemplo público. Solo HTTPS, dominio explícito, sin datos privados.
+https://casaviva.company/
+https://casaviva.company/producto/ventilador-recargable-20000-mah/
+https://casaviva.company/producto/ventilador-recargable-de-pedestal-milexus/
