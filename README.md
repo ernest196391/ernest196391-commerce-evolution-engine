@@ -1,45 +1,52 @@
 # Commerce Evolution Engine
 
-**Auditor de catálogos y base abierta para agentes comerciales.**
+**Herramientas abiertas de auditoría de catálogos, inspección visual pública y skills para agentes comerciales.**
 
-Commerce Evolution Engine es un proyecto independiente nacido del trabajo con Casa Viva, diseñado para que cualquier comercio pueda auditar la calidad de sus fichas de producto y, por fases, automatizar mejoras con autorización y evidencia.
+Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquier comercio que quiera evaluar fichas de producto antes de automatizar mejoras.
 
-> **Estado: prototipo v0.1.0.** La primera entrega analiza archivos CSV sin acceder a tiendas, cambiar productos ni consumir APIs de pago. Las capturas visuales Playwright, el conector WooCommerce y el puente hacia servidores son objetivos futuros, **no están implementados**.
+> **Estado v0.2 (experimental).** Está implementado el análisis CSV sin dependencias externas y el auditor Playwright de páginas públicas. No está implementado el conector WooCommerce autenticado, el acceso remoto a servidores, ni la revisión estética con IA. No se han certificado aún ejecuciones visuales en producción.
 
-## Uso rápido
+## Auditor CSV — v0.1
 
-Requiere Python 3.10+; el auditor no necesita dependencias externas ni credenciales.
+Requiere Python 3.10+:
 
 ```bash
 python -m unittest discover -s tests -v
 python -m src.commerce_evolution_engine.audit --input examples/products.csv --outdir results
 ```
 
-Genera `results/report.json` y `results/priorities.csv`.
+Genera `results/report.json` y `results/priorities.csv`. Acepta campos `id,name,description,short_description,images` o columnas equivalentes de CSV WooCommerce. El campo imágenes acepta `|` o comas. Los scores son **heurísticos, no una certificación SEO**.
 
-El CSV admite `id,name,description,short_description,images` y opcionalmente `sku,status,categories`. El campo `images` utiliza enlaces separados por `|`. También reconoce encabezados habituales de exportaciones WooCommerce: `ID,Name,Description,Short description,Images,SKU,Published,Categories`.
+## Auditor visual público — v0.2
 
-## Qué hace realmente v0.1
+Lee primero [la guía de auditoría visual](docs/VISUAL_AUDIT.md). Playwright necesita instalación opcional y descarga del navegador:
 
-- Detecta campos vacíos, títulos demasiado breves o genéricos, descripciones insuficientes y menos de cuatro referencias de imagen.
-- Asigna una puntuación orientativa de 0 a 100 para priorizar revisión humana.
-- **No** comprueba la calidad visual de las fotos, la veracidad de las especificaciones ni resultados SEO.
-- **No** modifica el CSV original, WooCommerce ni ningún otro sistema.
+```bash
+python -m pip install "playwright>=1.56,<2"
+python -m playwright install chromium
+python -m src.commerce_evolution_engine.visual_audit --urls examples/public-urls.txt --host casaviva.company --outdir results/visual
+```
 
-## Como skill o agente
+Genera capturas en 360, 390 y 1280 píxeles, además de `visual-report.json` y `visual-report.csv`. Señala títulos vacíos, H1, desbordamiento, imágenes rotas y `alt` ausente. **No** juzga automáticamente la calidad estética ni verifica afirmaciones técnicas.
 
-La skill está en [`.agents/skills/catalog-auditor/SKILL.md`](.agents/skills/catalog-auditor/SKILL.md). Lee [AGENTS.md](AGENTS.md) y [docs/AGENTS_INSTALL.md](docs/AGENTS_INSTALL.md) antes de usarla con tu asistente. La detección automática depende del programa agente utilizado.
+### GitHub Actions
 
-## Principios
+- `Test auditor (offline)`: pruebas locales sin servicios externos.
+- `Visual audit (manual)`: requiere ejecutarlo expresamente desde Actions. Consume minutos de GitHub Actions; confirmar presupuesto disponible antes de iniciarlo. No se ejecuta con cada push.
 
-**Solo lectura por defecto**; ninguna publicación, cambio de precios, inventario, órdenes, comisiones o cobros sin autorización explícita y pruebas. Sin credenciales, datos de clientes ni fotografías privadas en el repositorio. Nunca inventar características de productos.
+## Skills
 
-## Documentación
+- [catalog-auditor](.agents/skills/catalog-auditor/SKILL.md): calidad básica de CSV.
+- [visual-auditor](.agents/skills/visual-auditor/SKILL.md): capturas públicas y revisión humana.
 
-- [Arquitectura](docs/ARCHITECTURE.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Instalación de agentes](docs/AGENTS_INSTALL.md)
-- [Seguridad](SECURITY.md)
-- [Licencia MIT](LICENSE)
+Consulta [AGENTS.md](AGENTS.md), [instalación](docs/AGENTS_INSTALL.md), [seguridad](SECURITY.md), [arquitectura](docs/ARCHITECTURE.md) y [roadmap](docs/ROADMAP.md).
 
-La marca Casa Viva y sus fotografías no forman parte de esta licencia.
+## Garantías y límites
+
+- Solo lectura de tiendas: ningún cambio de precios, inventario, pedidos, fichas o fotos.
+- No incluir credenciales, clientes o fotografías privadas.
+- Nunca inventar características de productos.
+- No ejecutar diagnósticos remotos sin los permisos pertinentes.
+- Sin APIs de pago; Playwright local y GitHub Actions consumen recursos informáticos, que deben revisarse antes de ejecutarse.
+
+Licencia [MIT](LICENSE) para el código; no se transfieren marcas ni material comercial de terceros.
