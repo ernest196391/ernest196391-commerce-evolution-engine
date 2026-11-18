@@ -34,6 +34,14 @@ Esto **no autoriza implementar ya** conectores de chats, stock o exploración. S
 - Casa Viva Core v3.14.172: cinco archivos críticos coincidieron con GitHub en auditoría anterior; 893 productos publicados, 12 borradores, 292 variaciones. 893 con descripción principal y corta **rellenadas**, pero no clasificadas como buenas. Uno sin imagen principal asignada.
 - Mantener protección de producción, stock, pedidos, credenciales, caja y cobros.
 
+## Avance del agente principal — evaluación editorial implementada
+
+- Archivo `src/commerce_evolution_engine/editorial_review.py`: puntuación heurística de título, contenido, repetición, especificaciones, promesas y referencias de imagen.
+- Pruebas `tests/test_editorial_review.py`: textos rellenos pero pobres; afirmaciones que necesitan fuente; identificador aislado por comercio; no modificación del archivo original.
+- Skill `.agents/skills/editorial-quality/SKILL.md` y guía `docs/EDITORIAL_QUALITY.md` publicadas.
+- **No se ha certificado aún CI ni ejecución con los 893 productos reales.** El contenedor de trabajo no dispone de acceso DNS a GitHub para clonar; archivos publicados y recuperables por conexión GitHub. No declarar pruebas verdes ni calidad real certificada.
+- Próximo bloque efectivo: probar en CI, conseguir extracción autorizada del catálogo sin PII, evaluar muestra real, generar la primera ficha de antes/después con fotos originales, revisión y aprobación. No saltar hacia Supplier Radar.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
