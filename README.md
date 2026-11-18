@@ -1,6 +1,6 @@
 # Commerce Evolution Engine
 
-**Herramientas abiertas de auditoría de catálogos, inspección visual pública y skills para agentes comerciales.**
+**Herramientas abiertas de auditoría de catálogos, inspección visual pública, propuestas de stock y skills para agentes comerciales.**
 
 Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquier comercio que quiera evaluar fichas de producto antes de automatizar mejoras.
 
@@ -33,6 +33,16 @@ Genera capturas en 360, 390 y 1280 píxeles, además de `visual-report.json` y `
 
 - `Test auditor (offline)`: pruebas locales sin servicios externos.
 - `Visual audit (manual)`: requiere ejecutarlo expresamente desde Actions. Consume minutos de GitHub Actions; confirmar presupuesto disponible antes de iniciarlo. No se ejecuta con cada push.
+
+## Radar de proveedores — prototipo offline
+
+Este módulo produce **propuestas de revisión**, nunca cambios en el catálogo. Usa observaciones sintéticas o exportadas con permiso, por proveedor, SKU y variante:
+
+```bash
+python -m src.commerce_evolution_engine.supplier_radar --input examples/supplier-observations.example.json --outdir results/suppliers
+```
+
+Lee [Radar y estado de productos](docs/SUPPLIER_RADAR.md), [Delegación de permisos](docs/AUTONOMY_AND_PERMISSIONS.md), [Mapa multiagente](docs/MULTI_AGENT_PRODUCT_MAP.md) y la [skill supplier-radar](.agents/skills/supplier-radar/SKILL.md). El acceso automático a grupos de WhatsApp, la revisión nocturna programada y el conector WooCommerce **aún no existen**.
 
 ## Skills
 
