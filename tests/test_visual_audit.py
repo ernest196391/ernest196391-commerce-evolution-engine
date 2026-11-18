@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from src.commerce_evolution_engine.visual_audit import valid_url, load_urls, signals
+from src.commerce_evolution_engine.visual_audit import valid_url, load_urls, signals, _safe_final_url
 
 
 class VisualAuditTests(unittest.TestCase):
@@ -23,6 +23,12 @@ class VisualAuditTests(unittest.TestCase):
         for url in bad:
             with self.subTest(url=url), self.assertRaises(ValueError):
                 valid_url(url, {"casaviva.company"})
+
+    def test_reject_redirect_to_private_or_external_location(self):
+        hosts = {"casaviva.company"}
+        self.assertTrue(_safe_final_url("https://casaviva.company/producto/ejemplo/", hosts))
+        self.assertFalse(_safe_final_url("https://casaviva.company/checkout/", hosts))
+        self.assertFalse(_safe_final_url("https://externo.invalid/", hosts))
 
     def test_url_limit_and_deduplication(self):
         with tempfile.TemporaryDirectory() as temp:
