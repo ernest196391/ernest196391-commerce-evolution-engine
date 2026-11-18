@@ -28,6 +28,15 @@ def valid_url(raw: str, allowed_hosts: set[str]) -> str:
     return parsed.geturl()
 
 
+def _safe_final_url(url: str, allowed_hosts: set[str]) -> bool:
+    """Validate actual destination after redirect, including sensitive paths."""
+    try:
+        valid_url(url, allowed_hosts)
+        return True
+    except ValueError:
+        return False
+
+
 def load_urls(path: Path, allowed_hosts: set[str], limit: int = 8) -> list[str]:
     lines = path.read_text(encoding="utf-8-sig").splitlines()
     result = []
@@ -114,7 +123,7 @@ def run(urls: list[str], outdir: Path, allowed_hosts: set[str]) -> dict:
                         response = page.goto(url, wait_until="domcontentloaded", timeout=20000)
                         result["status"] = response.status if response else None
                         # Fail closed on cross-host redirects (before inspecting/saving).
-                        if urlsplit(page.url).hostname not in allowed_hosts:
+                        if not _safe_final_url(page.url, allowed_hosts):
                             result["error"] = "redireccion_fuera_del_dominio"
                         else:
                             try:
