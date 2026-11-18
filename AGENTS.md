@@ -1,6 +1,11 @@
 # Instrucciones del agente — Commerce Evolution Engine
 
+**LEER PRIMERO `docs/ACTIVE_PRIORITY.md`.** Es el checkpoint de dirección del producto; no iniciar módulos pospuestos por inercia.
+
 Lee `README.md`, `SECURITY.md` y la skill correspondiente antes de trabajar.
+
+## Prioridad actual (2026-11-18)
+**Única línea activa:** agente de mejora diaria de catálogo de productos: auditoría visual y editorial, fotografías fieles a las originales, títulos SEO, descripciones verificadas, borradores, aprobación, reversión y proceso incremental seguro. El radar de proveedores, mensajes WhatsApp, agotados y descubrimiento de productos quedan pospuestos hasta terminar esta línea. Sus componentes comunes pueden diseñarse para reutilización sin desarrollar esos módulos aún.
 
 ## Modos
 - `audit`: solo lectura; modo por defecto; CSV local o páginas HTTPS públicas expresamente autorizadas.
