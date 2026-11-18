@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "tenant_id": "demo-shop",
+  "environment": "demo",
+  "mode": "audit",
+  "kill_switch": false,
+  "allowed_sources": [
+    {
+      "id": "public-storefront",
+      "type": "public_https",
+      "hosts": [
+        "example.com"
+      ],
+      "max_pages_per_run": 5
+    }
+  ],
+  "schedules": [
+    {
+      "id": "nightly_supplier_review",
+      "timezone": "America/Havana",
+      "local_time": "02:00",
+      "enabled": false
+    }
+  ],
+  "capabilities": {
+    "catalog.read_public": true,
+    "supplier.read_private": false,
+    "whatsapp.read_groups": false,
+    "catalog.propose_stock_change": false,
+    "catalog.update_stock": false,
+    "catalog.unpublish": false,
+    "catalog.delete": false,
+    "catalog.update_price": false,
+    "orders.modify": false,
+    "shell.execute": false
+  },
+  "limits": {
+    "max_requests_per_run": 20,
+    "max_usd_api_spend_per_run": 0,
+    "max_product_mutations_per_run": 0
+  },
+  "approvals": {
+    "required_for": [
+      "catalog.update_stock",
+      "catalog.unpublish",
+      "catalog.delete",
+      "catalog.update_price",
+      "orders.modify"
+    ]
+  },
+  "data_retention_days": 7
+}
