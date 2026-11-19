@@ -12,6 +12,22 @@ Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquie
 
 El radar de proveedores, ingesta de chats WhatsApp, agotados y descubrimiento continuo **se han pospuesto a una fase posterior por decisión del propietario**. Su prototipo y documentación se conservan como referencia, pero no deben distraer ni activar tareas. Los componentes comunes (permisos, fuentes, SKU/variante, cola, evidencia, coste y auditoría) sí deben diseñarse para reutilización.
 
+## Agente de cuatro fotografías — prioridad activa
+
+El [contrato visual y de seguridad](docs/FOUR_IMAGE_AGENT.md) define HERO sobre blanco, LIFESTYLE humana, BENEFITS vectorial y DETAILS verificables. La [skill four-image-agent](.agents/skills/four-image-agent/SKILL.md) y el [comparativo de proveedores y costes](docs/IMAGE_PROVIDERS_AND_COST.md) forman parte de esta entrega.
+
+El planificador crea **un manifiesto** sin llamar a APIs:
+```bash
+python -m src.commerce_evolution_engine.four_image_planner --input examples/four-image-product.example.json --outdir results/four-images
+```
+
+El compositor offline opcional (Pillow) **sí puede producir 01-HERO y 03-BENEFITS** a partir de un PNG transparente fiel generado desde la foto real aprobada:
+```bash
+python -m pip install Pillow
+python -m src.commerce_evolution_engine.photo_compositor --cutout /ruta/a/cutout-verificado.png --outdir results/photos --headline "Ventilación cuando importa" --facts-json examples/verified-photo-facts.example.json
+```
+Requiere instalar Pillow voluntariamente; no hay integración remota ni llamadas facturables. **02-LIFESTYLE** requiere fotografía real de contexto o editor IA de referencia habilitado por política; **04-DETAILS** requiere tomas reales adicionales. No fingir 4 archivos cuando solo hay dos. Sin fotos originales verificadas, no se ejecuta render.
+
 ## Investigación de producto antes del SEO — nuevo componente
 
 El [análisis de prácticas Amazon](docs/AMAZON_BENCHMARK_AND_PRODUCT_RESEARCH.md) distingue prácticas de venta y prestaciones **verificadas del modelo exacto**. La [skill product-research](.agents/skills/product-research/SKILL.md) exige identificar el modelo, documentar fuentes y marcar atributos desconocidos.
