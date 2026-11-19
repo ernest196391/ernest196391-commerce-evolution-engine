@@ -41,6 +41,8 @@ class ApprovalLedger:
 
     def prepare(self, tenant, job_id, snapshot):
         job, source, result = self._candidate(tenant, job_id)
+        if snapshot.get('canonical') is not True or snapshot.get('source') != 'woo_rest_edit':
+            raise ValueError('se exige snapshot de WooCommerce en contexto edit')
         # Only a resolved canonical numeric WooCommerce ID may enter this plan.
         canonical_id = snapshot.get('id')
         if (snapshot.get('tenant_id') != tenant or not isinstance(canonical_id, int)
@@ -84,6 +86,8 @@ class ApprovalLedger:
 
     def preview(self, tenant, key, current, *, rollback=False):
         plan = self._plan(tenant,key)
+        if current.get('canonical') is not True or current.get('source') != 'woo_rest_edit':
+            raise ValueError('se exige lectura canónica actual')
         with self.worker.queue._db() as db:
             row = db.execute('SELECT decision FROM approvals WHERE tenant=? AND plan_hash=? ORDER BY id DESC LIMIT 1',(tenant,key)).fetchone()
         if not row or row['decision'] != 'approved':

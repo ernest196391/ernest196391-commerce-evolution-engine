@@ -22,7 +22,7 @@ class ApprovalTests(unittest.TestCase):
         with patch('src.commerce_evolution_engine.catalog_worker.review',return_value={'status':'awaiting_human_review','tenant_id':'a','product_id':'12','blockers':[],'publish_allowed':False}):
             self.worker.run('a')
         self.ledger = ApprovalLedger(self.worker)
-        self.before = {'tenant_id':'a','id':12,'sku':'SKU','name':'Old','description':'Old text','short_description':'Old short','price':'50','stock_quantity':5}
+        self.before = {'tenant_id':'a','id':12,'sku':'SKU','name':'Old','description':'Old text','short_description':'Old short','price':'50','stock_quantity':5,'canonical':True,'source':'woo_rest_edit'}
         self.key = self.ledger.prepare('a',self.job,self.before)
         self.checks = dict.fromkeys(HUMAN_CHECKS,True)
 
@@ -63,3 +63,7 @@ class ApprovalTests(unittest.TestCase):
             self.ledger.preview('a',new,{**self.before,'name':'New baseline'})
         with self.assertRaises(ValueError):
             self.ledger.preview('b',self.key,self.before)
+
+    def test_public_observation_cannot_prepare_reversal(self):
+        with self.assertRaises(ValueError):
+            self.ledger.prepare('a',self.job,{**self.before,'canonical':False,'source':'woo_store_public'})
