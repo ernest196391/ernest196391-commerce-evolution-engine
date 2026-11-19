@@ -24,3 +24,6 @@ Lee `README.md`, `SECURITY.md` y la skill correspondiente antes de trabajar.
 9. No publicar datos personales ni credenciales.
 10. No declarar implementadas integraciones o auditorías visuales que no se hayan probado.
 11. La auditoría visual acepta solo URLs públicas HTTPS, dominios explícitos y un máximo de ocho páginas por ejecución. No iniciar sesiones, pasar checkout, ni acceder a rutas privadas.
+12. Para cada producto, la imagen principal y todos los detalles usan foto original confirmada; la IA no suplanta un modelo parecido. La infografía usa tipografía vectorial con datos verificados. Revisar `docs/FOUR_IMAGE_AGENT.md` y `docs/IMAGE_PROVIDERS_AND_COST.md` antes de intentar generar.
+13. En la descripción evitar recitar las mismas dimensiones/velocidades/autonomías en título, breve, tabla y texto largo. Un hecho ocupa su sección principal; enlazarlo cuando ayude en lugar de repetir.
+
