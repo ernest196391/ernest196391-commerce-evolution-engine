@@ -17,10 +17,10 @@ Genera `editorial-report.json` y `editorial-priorities.csv`. El CSV puede ser ex
 - Título ausente, breve, demasiado extenso o todo en mayúsculas.
 - Descripción ausente o breve, poco vocabulario y ausencia de señales de especificaciones.
 - Lenguaje publicitario genérico y descripción corta que repite literalmente el título.
-- Menos de cuatro referencias de imágenes.
+- Menos de tres referencias de imágenes.
 - Detección de **afirmaciones técnicas que requieren fuentes**, como mAh, horas, watts o garantías. No significa que sean falsas.
 
-**Limitaciones:** sin inspección semántica avanzada, sin juicio sobre diseño/fidelidad fotográfica, sin validación factual ni puntuación SEO reconocida. Una ficha larga, llena de palabras técnicas o cuatro referencias de fotos aún puede ser muy mala. Toda salida es candidata a revisión humana.
+**Limitaciones:** sin inspección semántica avanzada, sin juicio sobre diseño/fidelidad fotográfica, sin validación factual ni puntuación SEO reconocida. Una ficha larga, llena de palabras técnicas o tres referencias de fotos aún puede ser muy mala. Toda salida es candidata a revisión humana.
 
 ## Control de cambios
 `review_key` distingue tienda y producto como identificador para futura cola de tareas. No hay escritura en WooCommerce, cron, precios, stock ni publicación. Los resultados contienen título y SKU: no colocar exportaciones privadas en GitHub público.

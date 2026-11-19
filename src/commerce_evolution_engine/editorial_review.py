@@ -60,7 +60,7 @@ def triage(row: dict, *, tenant_id: str = "sample") -> dict:
         flags.append("afirmaciones_tecnicas_requieren_fuente")
     if title and short and WS.sub(" ", title.lower()) == WS.sub(" ", short.lower()):
         mark("descripcion_corta_repite_titulo", 12)
-    if images < 4:
+    if images < 3:
         mark("referencias_imagen_insuficientes", 15 if images == 0 else 8)
     # Duplicate URLs, broken images, altered photos and false specs require separate review.
     record_key = "|".join([tenant_id, p["id"], p["sku"], p["name"]])

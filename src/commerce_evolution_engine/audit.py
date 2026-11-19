@@ -73,8 +73,8 @@ def audit(row: dict) -> dict:
         issue("descripcion_corta_breve_revisar", 8)
     if not count:
         issue("sin_imagen_referenciada", 25)
-    elif count < 4:
-        issue("menos_de_cuatro_imagenes_referenciadas", 10)
+    elif count < 3:
+        issue("menos_de_tres_imagenes_referenciadas", 10)
     return {
         "id": r["id"], "sku": r["sku"], "name": title,
         "score": max(0, score), "image_references": count,
