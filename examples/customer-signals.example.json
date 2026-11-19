@@ -1,0 +1,22 @@
+[
+  {
+    "topic": "producto_detalle",
+    "count": 216,
+    "unanswered": 36
+  },
+  {
+    "topic": "pedido_estado",
+    "count": 151,
+    "unanswered": 64
+  },
+  {
+    "topic": "disponibilidad",
+    "count": 53,
+    "unanswered": 10
+  },
+  {
+    "topic": "envio",
+    "count": 29,
+    "unanswered": 7
+  }
+]
