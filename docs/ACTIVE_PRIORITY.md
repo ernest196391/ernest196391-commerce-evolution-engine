@@ -71,6 +71,14 @@ Implementado en repositorio: `src/commerce_evolution_engine/four_image_planner.p
 
 **Siguiente hito:** motor local de composición blanca y texto vectorial, adaptador de edición fiel a original bajo aprobación, QA de cuatro piezas y piloto con foto original real.
 
+## Compositor fotográfico offline publicado
+
+- `src/commerce_evolution_engine/photo_compositor.py`: a partir de un **recorte PNG aprobado**, compone de forma local `01-hero.png` (blanco) y `03-benefits.png` (tipografía real). No fabrica escenas ni altera el original. Dependencia opcional: Pillow.
+- `tests/test_photo_compositor.py` y `examples/verified-photo-facts.example.json` agregados. No declarar pruebas aprobadas sin ejecutarlas con Pillow.
+- `docs/IMAGE_PROVIDERS_AND_COST.md`: estrategia por pieza, modalidades sin pago vs premium opt-in, límites de facturación y revisión visual.
+- Falta `02-lifestyle` con edición de referencia fiel y `04-details` con fotos reales adicionales; faltan primeras fotos originales para probar todo con un producto de Casa Viva.
+- No desbloquear por atajo la ruta `CVD_Photo_AI::vps_image()` que EVO-001 tiene bloqueada por coste.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
