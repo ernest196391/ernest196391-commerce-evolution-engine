@@ -1,0 +1,27 @@
+{
+  "tenant_id": "demo",
+  "product_id": "SYNTH-0001",
+  "identity_status": "comparable_only",
+  "sources": [
+    {
+      "id": "sample-1",
+      "type": "commercial_comparable",
+      "reference": "https://example.org/synthetic-listing",
+      "retrieved_at": "2026-11-18"
+    }
+  ],
+  "claims": [
+    {
+      "name": "autonomia",
+      "value": "20 horas",
+      "source_ids": [
+        "sample-1"
+      ],
+      "status": "unverified"
+    }
+  ],
+  "benchmark_notes": [
+    "Estructura comercial de referencia, no especificación del producto."
+  ],
+  "review_state": "research_needed"
+}
