@@ -41,6 +41,19 @@ class ApprovalTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.ledger.record('a',self.key,actor='test',decision='approved',checks=self.checks,commercial=bad)
 
+    def test_mediocre_dimension_cannot_be_compensated(self):
+        from src.commerce_evolution_engine.commercial_review import assess
+        for dimension in WEIGHTS:
+            with self.subTest(dimension=dimension):
+                bad = {**self.commercial,'scores':{**self.commercial['scores'],dimension:3}}
+                result = assess(bad,self.key)
+                self.assertGreaterEqual(result['score'],90)
+                self.assertIn(f'{dimension}_below_4',result['blockers'])
+                with self.assertRaises(ValueError):
+                    self.ledger.record('a',self.key,actor='test',decision='approved',checks=self.checks,commercial=bad)
+        passing = {**self.commercial,'scores':{**self.commercial['scores'],'photography':4}}
+        self.assertTrue(assess(passing,self.key)['eligible'])
+
     def test_review_then_reverse(self):
         with self.assertRaises(ValueError):
             self.ledger.preview('a',self.key,self.before)
