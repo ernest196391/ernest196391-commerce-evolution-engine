@@ -81,6 +81,16 @@ Implementado en repositorio: `src/commerce_evolution_engine/four_image_planner.p
 
 - `src/commerce_evolution_engine/photo_quality.py` y `tests/test_photo_quality.py` publicados para QA offline de cantidad/tamaño/duplicados. **Fidelidad a referencia original y legibilidad requieren revisión humana**; sin las cuatro piezas el QA debe bloquear.
 
+## Auditoría CRM real y recuperación de herramientas (2026-11-18)
+
+Se consultó directamente Supabase `nexo-production` en modo lectura: 89.629 mensajes WA registrados; 284 incidencias históricas (23 abiertas, 252 corregidas, 9 descartadas); principales preguntas de gestoras: producto_detalle (216 en últimos 14 días), pedido_estado (151), disponibilidad (53), comision (47), envio (29). Esos son conteos de soporte, no necesariamente preguntas o personas únicas. Resultados detallados e IDs de mensajes se conservan **solo en repositorio privado** `ernest196391/casa-viva-centro-control/docs/CRM_WHATSAPP_AUDIT_2026-11-18.md`.
+
+Se localizaron publicaciones recientes en el grupo de WhatsApp `SANKEY 🇨🇺` con fotos de ventilador recargable de 16 pulgadas. El texto y los IDs están en CRM, **pero el binario de la foto no se obtuvo** desde `crm_media` ni `crm_fotos_reales`; tampoco el anuncio prueba modelo exacto FN-17BAT10. Mantener la puerta de fidelidad y usar acceso autorizado al archivo del grupo cuando esté disponible.
+
+**Tecnología previa recuperada:** `vivabot/src/studio.js` + `src/photos.js` (recorte y retoque), `ernesto-rondon-nexo/lib/commerce/ai.ts` (imagen→investigación→copy), `images.ts`, `product-editorial.ts`, Casa Viva `CVD_Content_Studio`/ `CVD_Photo_AI`. Integrar y probar en lugar de reconstruir o habilitar APIs de pago.
+
+Para alimentarse de dudas de WhatsApp, se agregó `src/commerce_evolution_engine/customer_signals.py` con guía `docs/CRM_FEEDBACK_LOOP.md`: utiliza **solo agregados anonimizados** para dirigir preguntas a FAQ, investigación y fotos. La autocorrección del bot queda como rama supervisada; sin cambios automáticos de pedidos, comisiones o reparto.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
