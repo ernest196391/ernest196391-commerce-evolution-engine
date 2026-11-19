@@ -1,0 +1,28 @@
+{
+  "tenant_id": "demo-shop",
+  "product_id": "SYNTH-FAN",
+  "name": "Ventilador de demostración",
+  "source_image": "private/original-photo.jpg",
+  "source_image_verified": false,
+  "customer_outcome": "mantener ventilación cuando se interrumpe el suministro",
+  "facts": [
+    {
+      "label": "Velocidades",
+      "value": "3",
+      "status": "verified",
+      "evidence_id": "manual-verificado"
+    },
+    {
+      "label": "Autonomía",
+      "value": "hasta 12 h",
+      "status": "unverified",
+      "evidence_id": "sin-condiciones"
+    },
+    {
+      "label": "Voltaje",
+      "value": "110-220 V",
+      "status": "conflict",
+      "evidence_id": "fuentes-contradictorias"
+    }
+  ]
+}
