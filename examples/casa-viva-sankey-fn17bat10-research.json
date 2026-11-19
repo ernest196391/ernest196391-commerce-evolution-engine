@@ -1,0 +1,122 @@
+{
+  "tenant_id": "casaviva-pilot",
+  "product_id": "MK-2837",
+  "model": "Sankey FN-17BAT10",
+  "identity_status": "comparable_only",
+  "identity_note": "Modelo declarado en la ficha Casa Viva y coincidente con anuncios, pero no se ha inspeccionado placa/foto original de unidad concreta; no promover a exact_verified.",
+  "sources": [
+    {
+      "id": "cv-product",
+      "type": "supplier",
+      "reference": "https://casaviva.company/producto/ventilador-sankey-fn17bat10-recargable-16/",
+      "observed_at": "2026-11-18",
+      "scope": "Ficha propia; no prueba físicamente la unidad"
+    },
+    {
+      "id": "herco-2020",
+      "type": "official_document",
+      "reference": "https://www.herco.hn/storage/catalogos/revista-verano-herco-2020.pdf",
+      "observed_at": "2026-11-18",
+      "scope": "Catálogo distribuidor 2020, modelo FN-17BAT10; 24W, 110-220V"
+    },
+    {
+      "id": "milen-model",
+      "type": "commercial_comparable",
+      "reference": "https://www.milen.com.co/products/fn-17bat10-ventilador-sankey-recargable-16",
+      "observed_at": "2026-11-18",
+      "scope": "Referencia comercial del modelo; 110-220V y autonomías"
+    },
+    {
+      "id": "compremarket-model",
+      "type": "commercial_comparable",
+      "reference": "https://www.compremarket.com/catalog/ventilador-recargable-de-pedestal-de-16-con-lampara-integrada-sankey-fn-17bat10-333475",
+      "observed_at": "2026-11-18",
+      "scope": "Referencia comercial del modelo; 110-120V y autonomías"
+    }
+  ],
+  "claims": [
+    {
+      "name": "diámetro",
+      "value": "16 pulgadas",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "herco-2020"
+      ]
+    },
+    {
+      "name": "potencia anunciada",
+      "value": "24 W",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "herco-2020"
+      ]
+    },
+    {
+      "name": "velocidades",
+      "value": "3",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "herco-2020"
+      ]
+    },
+    {
+      "name": "autonomía anunciada en velocidad baja",
+      "value": "hasta 12 h",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "milen-model"
+      ]
+    },
+    {
+      "name": "autonomía anunciada en velocidad media",
+      "value": "hasta 7,5 h",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "milen-model"
+      ]
+    },
+    {
+      "name": "autonomía anunciada en velocidad alta",
+      "value": "hasta 4,5 h",
+      "status": "verified",
+      "source_ids": [
+        "cv-product",
+        "milen-model"
+      ]
+    },
+    {
+      "name": "voltaje de red de unidad vendida",
+      "value": "110-120 V versus 110-220 V, incompatible sin ver placa",
+      "status": "conflict",
+      "source_ids": [
+        "cv-product",
+        "herco-2020",
+        "milen-model",
+        "compremarket-model"
+      ]
+    },
+    {
+      "name": "batería interna",
+      "value": "batería de gel según proveedor; composición/voltaje a confirmar",
+      "status": "unverified",
+      "source_ids": [
+        "cv-product"
+      ]
+    },
+    {
+      "name": "foto de unidad Casa Viva",
+      "value": "no suministrada en el expediente",
+      "status": "unverified",
+      "source_ids": []
+    }
+  ],
+  "approval_status": "research_and_draft_only",
+  "no_woocommerce_changes": true,
+  "image_status": "four-image storyboard only; originals unverified",
+  "notes": "El gate es estructural. Con identity_status comparable_only, todas las afirmaciones deben seguir bloqueadas para aprobación autónoma aunque haya referencias."
+}
