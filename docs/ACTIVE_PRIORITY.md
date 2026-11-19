@@ -79,6 +79,8 @@ Implementado en repositorio: `src/commerce_evolution_engine/four_image_planner.p
 - Falta `02-lifestyle` con edición de referencia fiel y `04-details` con fotos reales adicionales; faltan primeras fotos originales para probar todo con un producto de Casa Viva.
 - No desbloquear por atajo la ruta `CVD_Photo_AI::vps_image()` que EVO-001 tiene bloqueada por coste.
 
+- `src/commerce_evolution_engine/photo_quality.py` y `tests/test_photo_quality.py` publicados para QA offline de cantidad/tamaño/duplicados. **Fidelidad a referencia original y legibilidad requieren revisión humana**; sin las cuatro piezas el QA debe bloquear.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
