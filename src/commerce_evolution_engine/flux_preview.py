@@ -39,7 +39,9 @@ def compose_preview(worker, background_hash, cutout_hash, *, destination, approv
     with Image.open(io.BytesIO(worker.get(background_hash))) as source:
         if source.size!=(1024,1024) or getattr(source,'n_frames',1)!=1:
             raise ValueError('fondo incompatible')
-        base=source.convert('RGBA')
+        # Center crop a square background to the largest exact 4:5 canvas.
+        # Do not stretch either layer or invent pixels through upscaling.
+        base=source.crop((104, 2, 920, 1022)).convert('RGBA')
     with Image.open(io.BytesIO(worker.get(cutout_hash))) as source:
         if source.format!='PNG' or source.mode!='RGBA' or source.width*source.height>16000000:
             raise ValueError('recorte PNG transparente requerido')
@@ -48,11 +50,12 @@ def compose_preview(worker, background_hash, cutout_hash, *, destination, approv
         if not bbox or alpha.getextrema()[0]!=0:
             raise ValueError('recorte sin transparencia o sin producto')
         item=source.crop(bbox)
-        item.thumbnail((780,780),Image.Resampling.LANCZOS)
-    base.alpha_composite(item,((1024-item.width)//2, (1024-item.height)//2))
+        item.thumbnail((int(base.width*.8),int(base.height*.8)),Image.Resampling.LANCZOS)
+    base.alpha_composite(item,((base.width-item.width)//2, (base.height-item.height)//2))
     destination=Path(destination)
     with destination.open('xb') as out:
         base.convert('RGB').save(out,format='PNG')
     return {'mode':'preview_only','background_hash':background_hash,'cutout_hash':cutout_hash,
             'output_hash':hashlib.sha256(destination.read_bytes()).hexdigest(),
+            'size':[base.width,base.height],'background_crop':[104,2,920,1022],
             'human_review_required':True,'publish_allowed':False,'cost_usd_api':0}
