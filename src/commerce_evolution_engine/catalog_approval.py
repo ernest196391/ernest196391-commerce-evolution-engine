@@ -33,6 +33,14 @@ class ApprovalLedger:
             raise ValueError('candidato bloqueado o inexistente')
         result = json.loads(self.worker.get(job['result_hash']))
         source = json.loads(self.worker.get(job['fingerprint']))
+        observation = source['product'].get('observation_hash')
+        if observation:
+            with self.worker.queue._db() as db:
+                latest=db.execute('''SELECT d.fingerprint,t.job_id FROM discovery_products d
+                    JOIN research_tasks t ON d.tenant=t.tenant AND d.product=t.product AND d.fingerprint=t.fingerprint
+                    WHERE d.tenant=? AND d.product=?''',(tenant,job['product'])).fetchone()
+            if latest is None or latest['fingerprint'] != observation or latest['job_id'] != job_id:
+                raise ValueError('observación del candidato obsoleta')
         if (result.get('status') != 'awaiting_human_review' or result.get('blockers')
                 or result.get('input_fingerprint') != job['fingerprint']
                 or result.get('tenant_id') != tenant or result.get('product_id') != job['product']
