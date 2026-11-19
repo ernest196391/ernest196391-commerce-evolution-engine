@@ -42,6 +42,17 @@ Esto **no autoriza implementar ya** conectores de chats, stock o exploración. S
 - **No se ha certificado aún CI ni ejecución con los 893 productos reales.** El contenedor de trabajo no dispone de acceso DNS a GitHub para clonar; archivos publicados y recuperables por conexión GitHub. No declarar pruebas verdes ni calidad real certificada.
 - Próximo bloque efectivo: probar en CI, conseguir extracción autorizada del catálogo sin PII, evaluar muestra real, generar la primera ficha de antes/después con fotos originales, revisión y aprobación. No saltar hacia Supplier Radar.
 
+## Ampliación necesaria: investigación de producto (Amazon como referencia)
+
+Decisión de producto: antes de crear fotos, título SEO o descripciones, **investigar el modelo real y qué información está verificada**, contrastando fabricante/manual/fotos del proveedor con fuentes actuales. Amazon sirve como benchmark de presentación y preguntas de compra, no como prueba de características del producto de Casa Viva ni fuente para copiar fotografías/textos.
+
+- Estudio oficial de prácticas Amazon: `docs/AMAZON_BENCHMARK_AND_PRODUCT_RESEARCH.md`.
+- Skill de investigación: `.agents/skills/product-research/SKILL.md`.
+- Validador estructural de evidencias: `src/commerce_evolution_engine/research_gate.py`.
+- Pruebas unitarias: `tests/test_research_gate.py`; pendientes de CI/verificación en ejecución remota.
+- **Límite actual:** aún no hay agente que investigue automáticamente la web ni que valide de verdad los documentos. La puerta de evidencias solo comprueba estructura, estados y que no se use una ficha comparable como base del modelo exacto.
+- Siguiente: elegir modelo piloto con foto original, navegación/consulta actual verificable, expediente de fuentes, ficha y plan de cuatro fotografías; comparar con Amazon en estructura, no copiar.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
