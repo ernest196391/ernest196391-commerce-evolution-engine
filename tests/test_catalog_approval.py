@@ -6,6 +6,7 @@ from unittest.mock import patch
 from src.commerce_evolution_engine.catalog_worker import Worker
 from src.commerce_evolution_engine.catalog_approval import ApprovalLedger
 from src.commerce_evolution_engine.catalog_supervisor import HUMAN_CHECKS
+from src.commerce_evolution_engine.content_studio_adapter import prepare_studio_request, BRIEF
 
 
 class ApprovalTests(unittest.TestCase):
@@ -67,3 +68,40 @@ class ApprovalTests(unittest.TestCase):
     def test_public_observation_cannot_prepare_reversal(self):
         with self.assertRaises(ValueError):
             self.ledger.prepare('a',self.job,{**self.before,'canonical':False,'source':'woo_store_public'})
+
+    def studio_fixture(self):
+        current = {**self.before,'status':'publish','image_ids':[34,35]}
+        studio = {'id':12,'name':'Old','description':'Old text','short':'Old short',
+                  'status':'publish','image_id':34,'gallery':[35], 'version':'a'*64,
+                  'brief':{**dict.fromkeys(BRIEF,'existing'),'duda':'matrix'}}
+        return current, studio
+
+    def test_studio_forward_and_rollback(self):
+        current, studio = self.studio_fixture()
+        with self.assertRaises(ValueError):
+            prepare_studio_request(self.ledger,'a',self.key,current,studio)
+        self.approve()
+        plan = prepare_studio_request(self.ledger,'a',self.key,current,studio)
+        self.assertFalse(plan['execute_allowed'])
+        self.assertTrue(plan['would_update_live'])
+        self.assertEqual(set(plan['body']), {'id','version','name','description','short','brief'})
+        self.assertEqual(plan['body']['brief'],dict.fromkeys(BRIEF,'existing'))
+        after = {**current,**self.ledger.preview('a',self.key,current)['changes']}
+        new_studio = {**studio,'name':after['name'],'description':after['description'],
+                      'short':after['short_description'],'version':'b'*64}
+        reverse = prepare_studio_request(self.ledger,'a',self.key,after,new_studio,rollback=True)
+        self.assertEqual(reverse['body']['name'],current['name'])
+        self.assertEqual(reverse['body']['description'],current['description'])
+        self.assertEqual(reverse['body']['short'],current['short_description'])
+        self.assertEqual(reverse['body']['version'],'b'*64)
+
+    def test_studio_rejects_unsafe_projection(self):
+        current, studio = self.studio_fixture()
+        self.approve()
+        for update in ({'id':13},{'version':'bad'},{'status':'draft'},{'gallery':[99]},
+                       {'short':'changed'},{'brief':{}},{'brief':{**studio['brief'],'unknown':'keep'}}):
+            with self.subTest(update=update), self.assertRaises(ValueError):
+                prepare_studio_request(self.ledger,'a',self.key,current,{**studio,**update})
+        self.ledger.record('a',self.key,actor='test',decision='revoked')
+        with self.assertRaises(ValueError):
+            prepare_studio_request(self.ledger,'a',self.key,current,studio)

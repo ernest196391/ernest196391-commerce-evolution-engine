@@ -53,6 +53,7 @@ class WooReader:
             raise ValueError('galería inválida')
         return {'tenant_id':self.tenant,'id':product_id,'sku':expected_sku,
                 **{k:data[k] for k in fields},'image_ids':[i['id'] for i in images],
+                'status':data.get('status') if canonical else None,
                 'source':'woo_rest_edit' if canonical else 'woo_store_public',
                 'canonical':canonical,'modified_gmt':data.get('date_modified_gmt') if canonical else None,
                 'publish_allowed':False}
