@@ -21,5 +21,18 @@ class FluxPreviewTests(unittest.TestCase):
             with self.assertRaises(ValueError): compose_preview(worker,preview['background_hash'],key,destination=dest)
             result=compose_preview(worker,preview['background_hash'],key,destination=dest,approved_background=True,approved_cutout=True)
             self.assertFalse(result['publish_allowed'])
-            self.assertEqual(Image.open(dest).getpixel((512,512)),(200,0,0))
+            with Image.open(dest) as rendered:
+                self.assertEqual(rendered.size,(816,1020))
+                self.assertEqual(rendered.getpixel((408,510)),(200,0,0))
+                self.assertEqual(rendered.getpixel((377,510)),(255,255,255))
+                self.assertEqual(rendered.getpixel((378,510)),(200,0,0))
+            self.assertEqual(result['size'],[816,1020])
+            self.assertEqual(result['background_crop'],[104,2,920,1022])
+            self.assertEqual(result['output_hash'],hashlib.sha256(dest.read_bytes()).hexdigest())
+            # Exact 4:5 and minimum 800 px meet the existing gallery QA.
+            from src.commerce_evolution_engine.photo_quality import inspect
+            dest.rename(root/'02-lifestyle.png')
+            report=inspect(root)
+            self.assertEqual(next(s for s in report['slots'] if s['slot']=='02-lifestyle.png')['issues'],[])
+            dest=root/'02-lifestyle.png'
             with self.assertRaises(FileExistsError): compose_preview(worker,preview['background_hash'],key,destination=dest,approved_background=True,approved_cutout=True)
