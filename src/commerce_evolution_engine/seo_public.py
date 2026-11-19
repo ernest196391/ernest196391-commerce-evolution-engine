@@ -45,7 +45,7 @@ def extract(html, url, tenant):
             'visible_currency':'USD' if match else None,'visible_stock':availability,'product':product}
 
 
-def run_batch(worker, *, origin, tenant, urls, opener=None):
+def validate_scope(origin, tenant, urls):
     if not isinstance(tenant,str) or not tenant.strip() or not 1<=len(urls)<=8 or len(set(urls))!=len(urls):
         raise ValueError('lote inválido')
     base=urlsplit(origin)
@@ -55,6 +55,10 @@ def run_batch(worker, *, origin, tenant, urls, opener=None):
         p=urlsplit(url)
         if p.scheme!='https' or p.netloc!=base.netloc or not re.fullmatch(r'/producto/[a-z0-9-]+/',p.path) or p.query or p.fragment:
             raise ValueError('ficha pública fuera del alcance')
+
+
+def run_batch(worker, *, origin, tenant, urls, opener=None):
+    validate_scope(origin, tenant, urls)
     opener=opener or build_opener(NoRedirect())
     rows=[]; failures=[]
     for url in urls:
