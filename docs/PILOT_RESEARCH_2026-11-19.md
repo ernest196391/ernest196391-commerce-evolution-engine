@@ -61,3 +61,18 @@ Tres preguntas visuales:
 ## Estado y siguiente acción
 
 Las tres fichas públicas fueron consultadas. Los originales binarios, derechos, etiqueta y correspondencia física aún no se certificaron; no declarar ninguna imagen aprobada. No generar desde fotos de vendedores externos. Revisar la galería existente de cada SKU, identificar originales autorizados, cotejar etiqueta y manual, y ejecutar supervisor con tres piezas reales y revisión humana. Cuarta foto no planificada. No se han creado imágenes finales, no se ha modificado WooCommerce.
+
+## Auditoría visual de las galerías existentes (posterior, mismo día)
+
+Se descargaron y examinaron las 19 imágenes públicas de las tres fichas, exclusivamente en scratch, sin modificar WooCommerce ni subir archivos de origen. Los archivos estaban disponibles por URL pública; el origen de cada archivo se registra mediante su URL y posición, no se supone permiso para fotografías externas.
+
+### nx-170 / producto 6557
+8 archivos; 1 pieza comercial con texto y 7 fotografías de aparato, caja y accesorios. La primera pieza 6558 no cumple hero sin textos/logotipos añadidos. La vista 6563 (595×900) es candidata a recorte local, no suficiente por sí sola para prometer resolución nativa 1600. 6564 y 6565 muestran cabezal con y sin protector; seleccionar una, no duplicar. 6559/6561/6562 documentan empaque y accesorios. Se observó en etiqueta de carcasa 6560: Kemei LADY SHAVER, KM-3018, DC 5V/1A, 3W. Esto confirma datos eléctricos de entrada y potencia, **no** tensión/capacidad interna ni resistencia al agua. Fuente: https://casaviva.company/wp-content/uploads/2026/11/00970d37-ac80-4aa0-84af-d1cb102b4d1c.webp . Candidato principal real: https://casaviva.company/wp-content/uploads/2026/11/6dad032f-65eb-447d-9844-a0af7579a32a.webp . No copiar afirmaciones promocionales de la primera pieza («piel sensible» etc.).
+
+### nx-132-1
+10 archivos; 7 binarios únicos; duplicados exactos por SHA256: posiciones 2=8, 3=10, 4=9. Hero existente collage con cable/bolsa y texto añadido; no sirve como hero limpio. Posiciones 2/3 muestran unidad y empaque; 6/7 medidas con cinta. Posición 5 es infografía externa potencialmente discordante (16,5 cm frente a 17 cm de ficha); no usar como respaldo de medida sin revisar cinta. Las fotos muestran tres cabezales, negro y rojo, bolsa/cable; no prueban carga/autonomía ni impermeabilidad. Candidata principal: https://casaviva.company/wp-content/uploads/2026/10/376f142e-8440-4787-8dd0-1eddd84b6ddd.webp (medición, recortar únicamente tras inspección). Candidata de contenido: https://casaviva.company/wp-content/uploads/2026/10/f1148097-6594-4e3b-9902-b1e13aef2868.webp . No eliminar duplicados automáticamente.
+
+### MK-2837
+Una imagen de 1254×1254, fondo claro, producto íntegro. El pie de foto público la identifica expresamente como imagen comercial preparada a partir de una foto aportada por Ernesto. URL: https://casaviva.company/wp-content/uploads/2026/11/ventilador-fn17bat10-comercial.png . Reutilizable como referencia de borrador, no como fotografía original documental; no usarla para certificar botones, placa de tensión, batería o autonomía. Recuperar foto fuente antes de edición/generación y pedir vista de placa si no está disponible.
+
+**Resultado:** 19 archivos, 16 binarios únicos (tres pares de duplicados KM-9013); 2 modelos con material fotográfico físico candidato; un ventilador requiere original. Próximo producir localmente hero y pieza de detalle de KM-3018, preservar el recorte aprobado y evaluar fidelidad antes de ejecutar supervisor; no declarar tres fotos terminadas si falta lifestyle.
