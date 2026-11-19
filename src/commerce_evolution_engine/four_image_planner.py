@@ -57,6 +57,12 @@ def build(product: dict) -> dict:
             seen.add(key)
             unique.append({"label": f["label"].strip(), "value": f["value"].strip(), "evidence_id": str(f["evidence_id"])})
     selected = unique[:2]
+    context = product.get("context_concept")
+    if context is not None:
+        if not isinstance(context, dict) or any(not isinstance(context.get(k), str) or not context[k].strip() for k in ("question", "evidence_id", "source_image")):
+            raise ValueError("context_concept requiere question, evidence_id y source_image")
+        if context["question"].strip().casefold() in {f["label"].casefold() for f in selected}:
+            raise ValueError("El contexto repite un dato de BENEFITS")
     # A fourth image needs a separate documented buyer question and evidence.
     detail = product.get("detail_concept")
     if detail is not None:
@@ -64,6 +70,8 @@ def build(product: dict) -> dict:
             raise ValueError("detail_concept requiere question, evidence_id y source_image")
         if detail["question"].strip().casefold() in {f["label"].casefold() for f in selected}:
             raise ValueError("El detalle repite un dato de BENEFITS")
+        if context and detail["question"].strip().casefold() == context["question"].strip().casefold():
+            raise ValueError("El detalle repite el contexto")
     active_slots = SLOTS if detail else REQUIRED_SLOTS
     title = product["name"].strip()
     intent = str(product.get("customer_outcome", "")).strip()
@@ -73,6 +81,7 @@ def build(product: dict) -> dict:
         "tenant_id": product["tenant_id"], "product_id": product["product_id"],
         "source_image": original, "verified": verified,
         "facts": selected, "outcome": intent, "title": title, "detail_concept": detail,
+        **({"context_concept": context} if context else {}),
     }, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
     slots = []
     for name in active_slots:
@@ -83,11 +92,15 @@ def build(product: dict) -> dict:
             "benefits": "Producto real, composición limpia, reservar espacio libre para superponer texto vectorial después de generar la escena. El generador de imágenes NO escribe los datos.",
             "details": "Composición con recortes de fotos originales y, solo si existen vistas originales suficientes, acercamientos de controles y piezas verificadas. Sin detalles inventados. Responder únicamente: " + (detail["question"] if detail else "") + ". Referencia adicional: " + (detail["source_image"] if detail else "") + ".",
         }[name]
+        if name == "lifestyle" and context:
+            config = {**config, "source_mode": "real_crop_and_composite"}
+            desc = "Contexto documental, no escena generada. Responder únicamente: " + context["question"] + ". Usar la foto real: " + context["source_image"] + ". No añadir componentes."
         slots.append({
             "slot": name, **config,
             "prompt": f"Producto identificado como: {title}. Usar obligatoriamente la referencia original: {original}. {desc} Respetar estrictamente geometría, etiquetas y accesorios.",
             "overlay_facts": selected if name == "benefits" else [],
             "detail_concept": detail if name == "details" else None,
+            **({"context_concept": context} if name == "lifestyle" and context else {}),
             "evidence_required": True,
             "status": "planned" if verified else "blocked_missing_verified_original",
             "qa_required": ["product_identity", "shape_and_color", "visible_parts", "legibility_mobile", "no_unverified_claims"],

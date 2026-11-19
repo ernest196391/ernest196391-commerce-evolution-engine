@@ -48,6 +48,9 @@ def review(product: dict, research: dict, draft: dict, folder: Path) -> dict:
         detail = slot["detail_concept"]
         if detail and not any(detail["evidence_id"] in c["source_ids"] for c in eligible):
             blockers.append("detalle_sin_evidencia_correspondiente")
+        context = slot.get("context_concept")
+        if context and not any(context["evidence_id"] in c["source_ids"] for c in eligible):
+            blockers.append("contexto_sin_evidencia_correspondiente")
     require_details = any(s["slot"] == "details" for s in plan["slots"])
     try:
         photos = inspect(folder, require_details=require_details)

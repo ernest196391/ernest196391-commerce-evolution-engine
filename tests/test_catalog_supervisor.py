@@ -65,3 +65,14 @@ class SupervisorTests(unittest.TestCase):
     def test_missing_pillow_is_blocked(self):
         with patch("src.commerce_evolution_engine.catalog_supervisor.inspect", side_effect=RuntimeError):
             self.assertEqual(review(self.product, self.research, self.draft, self.folder)["status"], "blocked")
+
+    def test_documentary_context_requires_evidence(self):
+        self.product["context_concept"] = {"question": "Contenido de caja", "evidence_id": "box", "source_image": "box.png"}
+        self.assertIn("contexto_sin_evidencia_correspondiente", self.run_review()["blockers"])
+        self.research["sources"].append({"id": "box", "type": "product_label", "reference": "synthetic packaging"})
+        self.research["claims"].append({"name": "Contenido", "value": "Cable", "status": "verified", "source_ids": ["box"]})
+        result = self.run_review()
+        self.assertEqual(result["status"], "awaiting_human_review")
+        self.assertEqual(len(result["plan"]["slots"]), 3)
+        self.assertEqual(result["plan"]["slots"][1]["source_mode"], "real_crop_and_composite")
+        self.assertFalse(result["publish_allowed"])
