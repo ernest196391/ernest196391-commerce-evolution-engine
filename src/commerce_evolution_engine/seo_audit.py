@@ -77,7 +77,10 @@ def audit(observation):
 
 def audit_batch(observations):
     """Same ordered gallery across distinct URLs is a review signal, not proof of error."""
-    reports=[audit(row) for row in observations]
+    return mark_shared_gallery([audit(row) for row in observations])
+
+
+def mark_shared_gallery(reports):
     groups={}
     for report in reports:
         if report['images']:
@@ -85,6 +88,6 @@ def audit_batch(observations):
             groups.setdefault(key,set()).add(report['url'])
     for report in reports:
         key=(report['tenant_id'],_origin(report['url']),tuple(report['images']))
-        if len(groups.get(key,()))>1:
+        if len(groups.get(key,()))>1 and 'shared_gallery_review' not in report['findings']:
             report['findings'].append('shared_gallery_review')
     return reports
