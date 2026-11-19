@@ -12,6 +12,10 @@ Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquie
 
 El radar de proveedores, ingesta de chats WhatsApp, agotados y descubrimiento continuo **se han pospuesto a una fase posterior por decisión del propietario**. Su prototipo y documentación se conservan como referencia, pero no deben distraer ni activar tareas. Los componentes comunes (permisos, fuentes, SKU/variante, cola, evidencia, coste y auditoría) sí deben diseñarse para reutilización.
 
+## Preguntas de clientes como insumo, sin desviar la prioridad
+
+La [arquitectura del ciclo de feedback CRM](docs/CRM_FEEDBACK_LOOP.md) reutiliza consultas reales **anonimizadas** para decidir qué investigar y qué foto preparar; el motor offline `customer_signals.py` transforma agregados en prioridades. No se conecta directamente a WhatsApp ni corrige automáticamente pedidos. La auditoría de incidencias con datos identificables permanece en el repositorio privado del Centro de Control.
+
 ## Agente de cuatro fotografías — prioridad activa
 
 El [contrato visual y de seguridad](docs/FOUR_IMAGE_AGENT.md) define HERO sobre blanco, LIFESTYLE humana, BENEFITS vectorial y DETAILS verificables. La [skill four-image-agent](.agents/skills/four-image-agent/SKILL.md) y el [comparativo de proveedores y costes](docs/IMAGE_PROVIDERS_AND_COST.md) forman parte de esta entrega.
