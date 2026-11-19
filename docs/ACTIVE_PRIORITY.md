@@ -53,6 +53,24 @@ Decisión de producto: antes de crear fotos, título SEO o descripciones, **inve
 - **Límite actual:** aún no hay agente que investigue automáticamente la web ni que valide de verdad los documentos. La puerta de evidencias solo comprueba estructura, estados y que no se use una ficha comparable como base del modelo exacto.
 - Siguiente: elegir modelo piloto con foto original, navegación/consulta actual verificable, expediente de fuentes, ficha y plan de cuatro fotografías; comparar con Amazon en estructura, no copiar.
 
+## Bloque activo inmediato: generador de cuatro fotografías
+
+Por decisión del propietario, **priorizar ahora la construcción del agente de cuatro fotografías**, no la exploración de proveedores. Las piezas son:
+1. HERO 1:1 sobre blanco puro, artículo real idéntico, sin texto.
+2. LIFESTYLE 4:5, humano utilizando el producto en contexto creíble.
+3. BENEFITS 4:5, diagrama limpio del producto con 1 beneficio principal y máximo dos datos verificables, tipografía vectorial.
+4. DETAILS 4:5, recortes o acercamientos de detalles reales, controles y dimensiones documentadas.
+
+La redacción SEO acompaña al paquete pero tiene política de **no redundancia**: título = identificación, resumen = resultado de compra, tabla = datos técnicos una sola vez, texto extendido = usos/limitaciones/FAQ. Evitar repetir tamaño, autonomía y velocidades en cada sección.
+
+Implementado en repositorio: `src/commerce_evolution_engine/four_image_planner.py` (manifiesto de cuatro slots, bloqueo de foto original sin confirmar, filtro de claims, fingerprint), `tests/test_four_image_planner.py`, `docs/FOUR_IMAGE_AGENT.md`, `.agents/skills/four-image-agent/SKILL.md`. **Aún no crea fotos ni conecta proveedor de generación.** No afirmar lo contrario.
+
+**Reutilizar** recorte local de `CVD_Photo_AI::vps_recorte()`, `CVD_Content_Studio` y políticas de Core, sin desbloquear `vps_image()` que permanece cerrado por EVO-001. Mantener gasto 0, origen documentado, QA visual y aprobación humana.
+
+**Futuro punto de entrada:** preguntas frecuentes de chats WhatsApp autorizados (anonimizadas) informan orden de fichas, FAQ y foco de imagen 03, pero no inicia ahora el agente de chats ni el radar de proveedores.
+
+**Siguiente hito:** motor local de composición blanca y texto vectorial, adaptador de edición fiel a original bajo aprobación, QA de cuatro piezas y piloto con foto original real.
+
 ## Qué debe hacer el próximo agente al retomar
 Leer primero `AGENTS.md`, este `docs/ACTIVE_PRIORITY.md`, `docs/VISUAL_AUDIT.md`, `docs/ROADMAP.md` y `SECURITY.md`. Trabajar directamente en el **agente diario de calidad de catálogo**, no en Supplier Radar. Comparar y verificar implementaciones antes de afirmar despliegues o pruebas.
 
