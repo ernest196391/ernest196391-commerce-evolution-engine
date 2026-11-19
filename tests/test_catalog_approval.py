@@ -7,6 +7,7 @@ from src.commerce_evolution_engine.catalog_worker import Worker
 from src.commerce_evolution_engine.catalog_approval import ApprovalLedger
 from src.commerce_evolution_engine.catalog_supervisor import HUMAN_CHECKS
 from src.commerce_evolution_engine.content_studio_adapter import prepare_studio_request, BRIEF
+from src.commerce_evolution_engine.studio_roundtrip import verify_roundtrip
 
 
 class ApprovalTests(unittest.TestCase):
@@ -105,3 +106,21 @@ class ApprovalTests(unittest.TestCase):
         self.ledger.record('a',self.key,actor='test',decision='revoked')
         with self.assertRaises(ValueError):
             prepare_studio_request(self.ledger,'a',self.key,current,studio)
+
+    def test_studio_roundtrip_evidence(self):
+        current, studio = self.studio_fixture()
+        current.update(type='simple',regular_price='50',sale_price='',stock_status='instock',manage_stock=True)
+        self.approve()
+        changes = self.ledger.preview('a',self.key,current)['changes']
+        before = {'woo':current,'studio':studio}
+        after = {'woo':{**current,**changes},'studio':{**studio,'name':changes['name'],
+                 'description':changes['description'],'short':changes['short_description'],'version':'b'*64}}
+        restored = {'woo':dict(current),'studio':dict(studio)}
+        result = verify_roundtrip(self.ledger,'a',self.key,before,after,restored)
+        self.assertEqual(result['status'],'evidence_consistent')
+        self.assertFalse(result['server_certified'])
+        for change in ({'stock_quantity':0},{'price':'99'},{'name':'not restored'},{'image_ids':[34]}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                verify_roundtrip(self.ledger,'a',self.key,before,after,{**restored,'woo':{**current,**change}})
+        with self.assertRaises(ValueError):
+            verify_roundtrip(self.ledger,'a',self.key,before,after,{**restored,'studio':{**studio,'version':'c'*64}})
