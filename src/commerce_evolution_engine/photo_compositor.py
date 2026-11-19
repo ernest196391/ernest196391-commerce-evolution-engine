@@ -27,6 +27,16 @@ def _font(ImageFont, size: int, font_path: str | None):
         return ImageFont.load_default()
 
 
+def _fit_text(draw, ImageFont, text, font_path, *, maximum, minimum, available):
+    """Fit actual glyph bounds, not character count; fail instead of tiny text."""
+    for size in range(maximum, minimum - 1, -1):
+        font = _font(ImageFont, size, font_path)
+        box = draw.textbbox((0, 0), text, font=font)
+        if box[2] - box[0] <= available:
+            return font, box
+    raise ValueError("Texto no cabe con tamaño legible")
+
+
 def render_hero(cutout_png: Path, destination: Path, *, size: int = 1200, product_fill: float = 0.82) -> dict:
     Image, ImageDraw, ImageFont = _pillow()
     if not (600 <= size <= 2400):
@@ -59,16 +69,21 @@ def render_benefits(cutout_png: Path, destination: Path, *,
                     headline: str, facts: list[dict], font_path: str | None = None,
                     width: int = 1080, height: int = 1350) -> dict:
     Image, ImageDraw, ImageFont = _pillow()
+    if (width, height) != (1080, 1350):
+        raise ValueError("Infografía maestra: formato 1080×1350 requerido")
     if not headline.strip() or len(headline) > 52 or "\n" in headline:
         raise ValueError("Titular vacío o demasiado extenso")
     if len(facts) > 2 or any(not f.get("evidence_id") or not f.get("label") or not f.get("value") for f in facts):
         raise ValueError("Infografía: máximo dos datos con evidencia")
     base = Image.new("RGB", (width, height), (248, 248, 246))
     d = ImageDraw.Draw(base)
-    title_font = _font(ImageFont, 54, font_path)
-    fact_font = _font(ImageFont, 40, font_path)
-    small_font = _font(ImageFont, 30, font_path)
-    d.text((60, 75), headline, font=title_font, fill=(26, 39, 42))
+    def write_line(text, x, y, maximum, minimum, color):
+        if not isinstance(text, str) or not text.strip() or any(c in text for c in '\r\n\t'):
+            raise ValueError("Texto de una sola línea requerido")
+        font, box = _fit_text(d, ImageFont, text, font_path, maximum=maximum,
+                              minimum=minimum, available=width - 2*x)
+        d.text((x-box[0], y-box[1]), text, font=font, fill=color)
+    write_line(headline, 60, 75, 54, 40, (26, 39, 42))
     src = Image.open(cutout_png).convert("RGBA")
     bbox = src.getchannel("A").getbbox()
     if not bbox:
@@ -82,8 +97,8 @@ def render_benefits(cutout_png: Path, destination: Path, *,
         y = 1040 + i * 125
         if len(str(fact["value"])) > 28 or len(str(fact["label"])) > 36:
             raise ValueError("Datos demasiado largos para diseño móvil")
-        d.text((75, y), str(fact["value"]), font=fact_font, fill=(26, 39, 42))
-        d.text((75, y + 53), str(fact["label"]), font=small_font, fill=(70, 78, 82))
+        write_line(str(fact["value"]), 75, y, 40, 32, (26, 39, 42))
+        write_line(str(fact["label"]), 75, y + 53, 30, 26, (70, 78, 82))
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.resolve() == cutout_png.resolve():
         raise ValueError("No sobrescribir original")

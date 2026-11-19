@@ -30,7 +30,7 @@ El compositor offline opcional (Pillow) **sí puede producir 01-HERO y 03-BENEFI
 python -m pip install Pillow
 python -m src.commerce_evolution_engine.photo_compositor --cutout /ruta/a/cutout-verificado.png --outdir results/photos --headline "Ventilación cuando importa" --facts-json examples/verified-photo-facts.example.json
 ```
-El [QA técnico offline](src/commerce_evolution_engine/photo_quality.py) verifica cuatro piezas presentes, tamaño/formato, esquinas blancas y duplicados. No sustituye verificación humana de fidelidad. Requiere instalar Pillow voluntariamente; no hay integración remota ni llamadas facturables. **02-LIFESTYLE** requiere fotografía real de contexto o editor IA de referencia habilitado por política; **04-DETAILS** requiere tomas reales adicionales. No fingir 4 archivos cuando solo hay dos. Sin fotos originales verificadas, no se ejecuta render.
+El [QA técnico offline](src/commerce_evolution_engine/photo_quality.py) verifica tres piezas obligatorias (la cuarta se exige con `--require-details` si el plan la incluye), tamaño/formato, esquinas blancas y duplicados. No sustituye verificación humana de fidelidad. Requiere instalar Pillow voluntariamente; no hay integración remota ni llamadas facturables. **02-LIFESTYLE** requiere fotografía real de contexto o editor IA de referencia habilitado por política; **04-DETAILS** es opcional y requiere una pregunta diferente, evidencia y fuente adicional (`detail_concept.question`, `evidence_id`, `source_image`). No fingir 4 archivos cuando solo hay dos. Sin fotos originales verificadas, no se ejecuta render.
 
 ## Investigación de producto antes del SEO — nuevo componente
 

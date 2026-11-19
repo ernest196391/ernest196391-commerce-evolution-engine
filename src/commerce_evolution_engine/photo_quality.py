@@ -12,7 +12,7 @@ from pathlib import Path
 SLOTS = ("01-hero.png", "02-lifestyle.png", "03-benefits.png", "04-details.png")
 
 
-def inspect(folder: Path) -> dict:
+def inspect(folder: Path, require_details: bool = False) -> dict:
     try:
         from PIL import Image
     except ImportError as exc:
@@ -22,6 +22,8 @@ def inspect(folder: Path) -> dict:
     for filename in SLOTS:
         file = folder / filename
         if not file.is_file():
+            if filename == SLOTS[-1] and not require_details:
+                continue
             reports.append({"slot": filename, "status": "missing", "issues": ["pieza_no_generada"]})
             continue
         if file.stat().st_size > 25 * 1024 * 1024:
@@ -58,18 +60,19 @@ def inspect(folder: Path) -> dict:
         if any(item["slot"] in slots for slots in duplicates):
             item["issues"].append("contenido_binario_duplicado")
             item["status"] = "rejected"
-    return {"schema_version": "0.1", "mode": "read_only",
+    return {"schema_version": "0.2", "mode": "read_only", "details_required": require_details,
             "slots": reports, "technical_ready": all(item["status"] == "technical_review_required" for item in reports),
             "human_approval_required": True,
             "warning": "No analiza fidelidad del producto, halos, anatomía, exactitud de etiquetas, texto ni hechos."}
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(description="QA técnico de cuatro imágenes, sin publicar")
+    p = argparse.ArgumentParser(description="QA técnico de tres imágenes y detalle opcional, sin publicar")
     p.add_argument("--dir", required=True, type=Path)
     p.add_argument("--report", required=True, type=Path)
+    p.add_argument("--require-details", action="store_true", help="Exigir cuarta pieza si el plan la incluye")
     a = p.parse_args(argv)
-    result = inspect(a.dir)
+    result = inspect(a.dir, require_details=a.require_details)
     a.report.parent.mkdir(parents=True, exist_ok=True)
     a.report.write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(f"QA: {a.report}; técnico completo: {result['technical_ready']}; humano requerido")

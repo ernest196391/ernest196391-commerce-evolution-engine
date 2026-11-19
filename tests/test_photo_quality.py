@@ -16,7 +16,7 @@ class PhotoQualityTests(unittest.TestCase):
             r = inspect(Path(t))
             self.assertFalse(r["technical_ready"])
             self.assertTrue(r["human_approval_required"])
-            self.assertEqual(sum(x["status"]=="missing" for x in r["slots"]), 4)
+            self.assertEqual(sum(x["status"]=="missing" for x in r["slots"]), 3)
 
     def test_all_four_distinct_and_correct_formats(self):
         with tempfile.TemporaryDirectory() as t:
@@ -26,6 +26,14 @@ class PhotoQualityTests(unittest.TestCase):
                 Image.new("RGB", size, (255, 255, 255) if i == 0 else (20*i, 80, 100)).save(base / filename)
             result = inspect(base)
             self.assertTrue(result["technical_ready"])
+
+    def test_three_pass_but_missing_required_fourth_fails(self):
+        with tempfile.TemporaryDirectory() as t:
+            base = Path(t)
+            for i, filename in enumerate(("01-hero.png", "02-lifestyle.png", "03-benefits.png")):
+                Image.new("RGB", (900, 900) if i == 0 else (800, 1000), (255,255,255) if i == 0 else (20*i,80,100)).save(base / filename)
+            self.assertTrue(inspect(base)["technical_ready"])
+            self.assertFalse(inspect(base, require_details=True)["technical_ready"])
 
     def test_duplicate_images_are_rejected(self):
         with tempfile.TemporaryDirectory() as t:
