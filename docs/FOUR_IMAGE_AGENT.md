@@ -72,3 +72,12 @@ Reutilizar `CVD_Content_Studio`, `CVD_Photo_AI` y el VPS `casaviva-imagen` sin r
 - Ejecución reproducible, costo medido y reversión.
 - Flujo de revisión aprobado en Casa Viva sin publicar automáticamente.
 - Pruebas de idempotencia, fallos de proveedor, límites de gasto y seguridad.
+
+## QA técnico offline publicado
+`src/commerce_evolution_engine/photo_quality.py` valida la presencia de los cuatro archivos, resolución mínima, relación de aspecto, cuatro esquinas blancas en HERO y hashes duplicados. **No** detecta alucinaciones visuales ni verifica exactitud de la foto y los datos; eso exige contraste humano con los originales.
+
+```bash
+python -m src.commerce_evolution_engine.photo_quality --dir results/photos --report results/photos/qa-report.json
+```
+
+Mientras falten 02-LIFESTYLE o 04-DETAILS, `technical_ready=false` es correcto. Pruebas `tests/test_photo_quality.py` (Pillow opcional) publicadas, ejecución pendiente de certificar.
