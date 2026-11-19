@@ -25,6 +25,34 @@ class WooReader:
         self.credentials = credentials
         self.opener = opener or build_opener(NoRedirect())
 
+    def public_page(self, page, *, per_page=20):
+        if type(page) is not int or page < 1 or type(per_page) is not int or not 1 <= per_page <= 50:
+            raise ValueError('paginación inválida')
+        route = f'/wp-json/wc/store/v1/products?page={page}&per_page={per_page}&orderby=id&order=asc'
+        req = Request(self.origin+route, headers={'Accept':'application/json'}, method='GET')
+        with self.opener.open(req, timeout=20) as response:
+            raw = response.read(4*1024*1024+1)
+            total_pages = int(response.headers['X-WP-TotalPages'])
+        if len(raw)>4*1024*1024 or total_pages < 0 or page > max(1,total_pages):
+            raise ValueError('página inválida')
+        data = json.loads(raw)
+        if not isinstance(data,list) or len(data)>per_page:
+            raise ValueError('respuesta de catálogo inválida')
+        rows = []
+        for p in data:
+            if (not isinstance(p,dict) or type(p.get('id')) is not int or p['id']<=0
+                    or any(not isinstance(p.get(k),str) for k in ('sku','name','description','short_description'))
+                    or not isinstance(p.get('images'),list)
+                    or any(not isinstance(i,dict) or type(i.get('id')) is not int or i['id']<=0 for i in p['images'])):
+                raise ValueError('producto público inválido')
+            rows.append({**{k:p[k] for k in ('id','sku','name','description','short_description')},
+                         'image_ids':[i['id'] for i in p['images']], 'tenant_id':self.tenant,
+                         'canonical':False,'source':'woo_store_public','publish_allowed':False})
+        ids = [p['id'] for p in rows]
+        if ids != sorted(set(ids)):
+            raise ValueError('orden de página inesperado')
+        return rows, page >= total_pages
+
     def read(self, product_id, *, expected_sku, canonical=False):
         if not isinstance(product_id,int) or isinstance(product_id,bool) or product_id <= 0 or not expected_sku:
             raise ValueError('identidad inválida')
