@@ -8,6 +8,7 @@ from src.commerce_evolution_engine.catalog_approval import ApprovalLedger
 from src.commerce_evolution_engine.catalog_supervisor import HUMAN_CHECKS
 from src.commerce_evolution_engine.content_studio_adapter import prepare_studio_request, BRIEF
 from src.commerce_evolution_engine.studio_roundtrip import verify_roundtrip
+from src.commerce_evolution_engine.commercial_review import WEIGHTS, HARD_GATES
 
 
 class ApprovalTests(unittest.TestCase):
@@ -27,9 +28,18 @@ class ApprovalTests(unittest.TestCase):
         self.before = {'tenant_id':'a','id':12,'sku':'SKU','name':'Old','description':'Old text','short_description':'Old short','price':'50','stock_quantity':5,'canonical':True,'source':'woo_rest_edit'}
         self.key = self.ledger.prepare('a',self.job,self.before)
         self.checks = dict.fromkeys(HUMAN_CHECKS,True)
+        self.commercial = {'plan_hash':self.key,'scores':dict.fromkeys(WEIGHTS,5),
+                           'gates':dict.fromkeys(HARD_GATES,True),'notes':dict.fromkeys(WEIGHTS,'synthetic observation')}
 
     def approve(self):
-        self.ledger.record('a',self.key,actor='test-only',decision='approved',checks=self.checks)
+        self.ledger.record('a',self.key,actor='test-only',decision='approved',checks=self.checks,commercial=self.commercial)
+
+    def test_sankey_regression_rejects_even_high_score(self):
+        for bad in ({**self.commercial,'gates':{**self.commercial['gates'],'correct_spec_labels':False}},
+                    {**self.commercial,'scores':dict.fromkeys(WEIGHTS,1)},
+                    {**self.commercial,'plan_hash':'wrong'},None):
+            with self.assertRaises(ValueError):
+                self.ledger.record('a',self.key,actor='test',decision='approved',checks=self.checks,commercial=bad)
 
     def test_review_then_reverse(self):
         with self.assertRaises(ValueError):

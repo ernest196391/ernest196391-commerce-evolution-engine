@@ -5,6 +5,7 @@ import json
 import time
 from .catalog_worker import Worker, encode, digest
 from .catalog_supervisor import HUMAN_CHECKS
+from .commercial_review import assess
 
 FIELDS = ('name', 'description', 'short_description')
 
@@ -23,6 +24,8 @@ class ApprovalLedger:
                 id INTEGER PRIMARY KEY, tenant TEXT NOT NULL, job_id INTEGER NOT NULL,
                 plan_hash TEXT NOT NULL, decision TEXT NOT NULL, actor TEXT NOT NULL,
                 at REAL NOT NULL, FOREIGN KEY(job_id) REFERENCES jobs(id))''')
+            if 'commercial_hash' not in {r[1] for r in db.execute('PRAGMA table_info(approvals)')}:
+                db.execute('ALTER TABLE approvals ADD COLUMN commercial_hash TEXT')
 
     def _candidate(self, tenant, job_id):
         job = next((j for j in self.worker.queue.snapshot(tenant) if j['id'] == job_id), None)
@@ -71,17 +74,22 @@ class ApprovalLedger:
             raise ValueError('plan manipulado')
         return plan
 
-    def record(self, tenant, key, *, actor, decision, checks=None):
+    def record(self, tenant, key, *, actor, decision, checks=None, commercial=None):
         if not isinstance(actor,str) or not actor.strip() or decision not in ('approved','revoked'):
             raise ValueError('decisión o actor inválido')
         plan = self._plan(tenant,key)
         if decision == 'approved' and (not isinstance(checks,dict) or set(checks) != set(HUMAN_CHECKS)
                 or any(v is not True for v in checks.values())):
             raise ValueError('checklist humano incompleto')
+        commercial_hash = None
+        if decision == 'approved':
+            if not assess(commercial, key)['eligible']:
+                raise ValueError('calidad comercial insuficiente')
+            commercial_hash = self.worker.put(encode(commercial))
         with self.worker.queue._db() as db:
             db.execute('BEGIN IMMEDIATE')
-            db.execute('INSERT INTO approvals(tenant,job_id,plan_hash,decision,actor,at) VALUES(?,?,?,?,?,?)',
-                       (tenant,plan['job_id'],key,decision,actor,time.time()))
+            db.execute('INSERT INTO approvals(tenant,job_id,plan_hash,decision,actor,at,commercial_hash) VALUES(?,?,?,?,?,?,?)',
+                       (tenant,plan['job_id'],key,decision,actor,time.time(),commercial_hash))
             db.commit()
 
     def preview(self, tenant, key, current, *, rollback=False):
@@ -89,9 +97,11 @@ class ApprovalLedger:
         if current.get('canonical') is not True or current.get('source') != 'woo_rest_edit':
             raise ValueError('se exige lectura canónica actual')
         with self.worker.queue._db() as db:
-            row = db.execute('SELECT decision FROM approvals WHERE tenant=? AND plan_hash=? ORDER BY id DESC LIMIT 1',(tenant,key)).fetchone()
-        if not row or row['decision'] != 'approved':
+            row = db.execute('SELECT decision,commercial_hash FROM approvals WHERE tenant=? AND plan_hash=? ORDER BY id DESC LIMIT 1',(tenant,key)).fetchone()
+        if not row or row['decision'] != 'approved' or not row['commercial_hash']:
             raise ValueError('sin aprobación vigente')
+        if not assess(json.loads(self.worker.get(row['commercial_hash'])), key)['eligible']:
+            raise ValueError('calidad comercial insuficiente')
         if (current.get('tenant_id'),current.get('id'),current.get('sku')) != (tenant,plan['product_id'],plan['sku']):
             raise ValueError('identidad actual no coincide')
         expected, target = (plan['after'],plan['before']) if rollback else (plan['before'],plan['after'])
