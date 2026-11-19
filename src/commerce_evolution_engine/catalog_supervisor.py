@@ -11,7 +11,7 @@ from .editorial_review import triage
 from .four_image_planner import build
 from .photo_quality import inspect
 from .research_gate import validate
-from .commercial_review import WEIGHTS, HARD_GATES
+from .commercial_review import WEIGHTS, HARD_GATES, MINIMUM_DIMENSION_SCORE
 
 HUMAN_CHECKS = (
     "exact_model_and_variant", "original_photo_and_rights", "physical_fidelity",
@@ -75,7 +75,7 @@ def review(product: dict, research: dict, draft: dict, folder: Path) -> dict:
         "blockers": sorted(set(blockers)), "editorial": editorial,
         "evidence": evidence, "photo_qa": photos, "plan": plan,
         "human_checklist": {key: "not_verified" for key in HUMAN_CHECKS},
-        "commercial_review": {"minimum_score": 90, "weights": WEIGHTS,
+        "commercial_review": {"minimum_score": 90, "minimum_dimension_score": MINIMUM_DIMENSION_SCORE, "weights": WEIGHTS,
                               "gates": dict.fromkeys(HARD_GATES, "not_verified")},
         "human_approval_required": True, "publish_allowed": False,
         "billable_generations": 0, "products_modified": 0,
