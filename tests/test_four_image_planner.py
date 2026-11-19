@@ -15,12 +15,20 @@ def product(verified=True):
 
 
 class FourImagePlannerTests(unittest.TestCase):
-    def test_four_distinct_images_and_no_billing(self):
+    def test_three_distinct_images_and_no_billing(self):
         result = build(product())
-        self.assertEqual([s["slot"] for s in result["slots"]], list(SLOTS))
+        self.assertEqual([s["slot"] for s in result["slots"]], list(SLOTS[:3]))
         self.assertEqual(result["billable_generations"], 0)
         self.assertEqual(result["products_modified"], 0)
         self.assertTrue(all(s["evidence_required"] for s in result["slots"]))
+
+    def test_optional_detail_requires_separate_evidence(self):
+        p = product()
+        p["detail_concept"] = {"question": "Cómo se ajusta la altura", "evidence_id": "manual-2", "source_image": "detalle.jpg"}
+        self.assertEqual([s["slot"] for s in build(p)["slots"]], list(SLOTS))
+        p["detail_concept"]["question"] = "Tres velocidades"
+        with self.assertRaises(ValueError):
+            build(p)
 
     def test_unverified_photo_blocks_all_slots(self):
         result = build(product(False))
