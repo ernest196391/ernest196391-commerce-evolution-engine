@@ -12,6 +12,18 @@ Proyecto independiente nacido del trabajo con Casa Viva, diseñado para cualquie
 
 El radar de proveedores, ingesta de chats WhatsApp, agotados y descubrimiento continuo **se han pospuesto a una fase posterior por decisión del propietario**. Su prototipo y documentación se conservan como referencia, pero no deben distraer ni activar tareas. Los componentes comunes (permisos, fuentes, SKU/variante, cola, evidencia, coste y auditoría) sí deben diseñarse para reutilización.
 
+## Investigación de producto antes del SEO — nuevo componente
+
+El [análisis de prácticas Amazon](docs/AMAZON_BENCHMARK_AND_PRODUCT_RESEARCH.md) distingue prácticas de venta y prestaciones **verificadas del modelo exacto**. La [skill product-research](.agents/skills/product-research/SKILL.md) exige identificar el modelo, documentar fuentes y marcar atributos desconocidos.
+
+El validador offline de evidencia `research_gate.py` inspecciona **estructura de las referencias**, pero no certifica que las fuentes sean verdaderas o vigentes:
+
+```bash
+python -m src.commerce_evolution_engine.research_gate --input examples/product-research.example.json --outdir results/research
+```
+
+La investigación autónoma por navegación web, la generación de imágenes y la publicación no están implementadas en este módulo. Su salida es una puerta previa a crear borradores.
+
 ## Motor editorial del agente principal — implementado, pendiente de validación CI
 
 La nueva [rúbrica editorial](docs/EDITORIAL_QUALITY.md) detecta títulos débiles, descripciones genéricas, textos cortos duplicados, referencias fotográficas insuficientes y afirmaciones técnicas que necesitan fuente. No inventa datos ni modifica productos.
