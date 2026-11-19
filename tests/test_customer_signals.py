@@ -6,7 +6,8 @@ class CustomerSignalTests(unittest.TestCase):
     def test_product_questions_directed_to_details(self):
         result=prioritize([{"topic":"producto_detalle","count":216,"unanswered":36},
                            {"topic":"pedido_estado","count":151,"unanswered":64}])
-        self.assertEqual(result["signals"][0]["topic"],"pedido_estado")
+        self.assertEqual([(x["topic"], x["priority"]) for x in result["signals"]],
+                         [("producto_detalle", 288), ("pedido_estado", 279)])
         self.assertEqual(next(x for x in result["signals"] if x["topic"]=="producto_detalle")["photo_slot"],"04-details")
         self.assertTrue(result["no_product_changes"])
 
